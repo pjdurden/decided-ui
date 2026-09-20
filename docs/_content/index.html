@@ -1,17 +1,23 @@
-<section class="hero band"><div class="in">
-  <span class="eyebrow">decided-ui</span>
-  <h1>The model chooses among interfaces you wrote.</h1>
-  <p class="lede">Not generated markup. Named variants, type-checked against your components, decided by <a href="jev.html">Jev</a> in a single call, and measured so you learn which one actually won.</p>
-  <div class="cta">
-    <a class="go" href="concepts.html">Read the concepts</a>
-    <a class="ghost" href="https://github.com/pjdurden/decided-ui">GitHub</a>
+<section class="band hero">
+  <div class="marg">spec &#183; decide &#183; render &#183; measure &#183; spec &#183; decide &#183; render &#183; measure</div>
+  <div class="in">
+    <span class="eyebrow">decided-ui &#183; a ui paradigm</span>
+    <h1>The model chooses among interfaces you wrote.</h1>
+    <p class="lede">Not generated markup. Named variants, type-checked against your components, decided by <a href="jev.html">Jev</a> in a single call, and measured so you learn which one actually won.</p>
+    <div class="cta">
+      <a class="go" href="concepts.html">Read the concepts</a>
+      <a class="ghost" href="https://github.com/pjdurden/decided-ui">GitHub</a>
+    </div>
+    <div class="warn"><b>Design and working prototype.</b>
+      <p>The loop below is proven end to end in a Python prototype, and the latency figures on this site are measured rather than estimated. The TypeScript framework described in these docs is <b>not built yet</b>. See the <a href="roadmap.html">roadmap</a>. Nothing here is installable today.</p>
+    </div>
   </div>
-  <div class="warn"><b>Status: design and working prototype.</b> The loop below is proven end to end in a Python prototype, and the latency figures on this site are measured rather than estimated. The TypeScript framework described in these docs is <b>not built yet</b>. See the <a href="roadmap.html">roadmap</a>. Nothing here is installable today.</div>
-</div></section>
+  <div class="art"><img src="img/field-hero.png" alt=""></div>
+</section>
 
-<section class="band blush"><div class="in">
-  <span class="eyebrow">The idea</span>
-  <h2>Two ways to let a model touch your interface</h2>
+<section class="band verm"><div class="in">
+  <span class="eyebrow" style="color:var(--ink)">The idea</span>
+  <h2>Two ways to let a model<br>touch your interface</h2>
   <div class="contrast">
     <div class="card">
       <span class="tag">Generative UI</span>
@@ -36,15 +42,15 @@
   </figure>
 </div></section>
 
-<section class="band sky"><div class="in">
+<section class="band ink"><div class="in">
   <span class="eyebrow">Five steps</span>
   <h2>What you write</h2>
   <ol class="steps">
-    <li><b>Define the spec.</b> <span>Slots, their variants, and a plain-English criterion for each. The criterion is both the documentation and the question the model is asked. <a href="spec.html">Spec API</a>.</span></li>
-    <li><b>Write the components.</b> <span>Ordinary React, one per variant. Nothing in them knows a model exists.</span></li>
-    <li><b>Write the assembler, or skip it.</b> <span>Confidence floors, caps, ordering, fallbacks. A working default ships, so most people never write this. <a href="concepts.html#assembler">How the assembler works</a>.</span></li>
-    <li><b>Wire the decider.</b> <span>One line in a route handler. The key stays on the server. <a href="architecture.html">Architecture</a>.</span></li>
-    <li><b>Read the results.</b> <span>Impressions and conversions land in Amplitude joined by a decision id.</span></li>
+    <li><span><b>Define the spec.</b> Slots, their variants, and a plain-English criterion for each. The criterion is both the documentation and the question the model is asked. <a href="spec.html">Spec API</a>.</span></li>
+    <li><span><b>Write the components.</b> Ordinary React, one per variant. Nothing in them knows a model exists.</span></li>
+    <li><span><b>Write the assembler, or skip it.</b> Confidence floors, caps, ordering, fallbacks. A working default ships, so most people never write this. <a href="concepts.html#assembler">How the assembler works</a>.</span></li>
+    <li><span><b>Wire the decider.</b> One line in a route handler. The key stays on the server. <a href="architecture.html">Architecture</a>.</span></li>
+    <li><span><b>Read the results.</b> Impressions and conversions land in Amplitude joined by a decision id.</span></li>
   </ol>
 
   <h3>The spec is TypeScript, and that is the point</h3>
@@ -67,7 +73,7 @@
     question: "How central is each of these to this shopper's decision?",
   }),
 })</code></pre>
-  <p>The keys of <code>options</code> are constrained to <code>Hero</code>&rsquo;s own variant union. Rename a variant and the spec stops compiling. Delete a component and you find out at build time, not when a user hits the page.</p>
+  <p class="lede">The keys of <code>options</code> are constrained to <code>Hero</code>&rsquo;s own variant union. Rename a variant and the spec stops compiling.</p>
 </div></section>
 
 <section class="band"><div class="in">
@@ -77,25 +83,25 @@
   <div class="shots">
     <figure>
       <img src="img/layout-media-left.png" alt="A product page with the photo on the left and details on the right.">
-      <figcaption><b>media_left</b>: &ldquo;browsing after work with no particular plan&rdquo;</figcaption>
+      <figcaption>media_left &#183; &ldquo;browsing after work with no particular plan&rdquo;</figcaption>
     </figure>
     <figure>
       <img src="img/layout-dense-compare.png" alt="A dense two column comparison layout with a small photo.">
-      <figcaption><b>dense_compare</b>: &ldquo;comparing four models on a spreadsheet right now&rdquo;</figcaption>
+      <figcaption>dense_compare &#183; &ldquo;comparing four models on a spreadsheet right now&rdquo;</figcaption>
     </figure>
     <figure>
       <img src="img/layout-editorial.png" alt="An editorial layout with a centred title and a full width photo.">
-      <figcaption><b>editorial</b>: &ldquo;not sure they need one, would like to be shown what it is like to live with&rdquo;</figcaption>
+      <figcaption>editorial &#183; &ldquo;not sure they need one, would like to be shown what it is like to live with&rdquo;</figcaption>
     </figure>
     <figure>
       <img src="img/layout-fast-checkout.png" alt="A compact layout with a buy button pinned above everything.">
-      <figcaption><b>fast_checkout</b>: &ldquo;it died yesterday, needs a replacement today, card saved&rdquo;</figcaption>
+      <figcaption>fast_checkout &#183; &ldquo;it died yesterday, needs a replacement today, card saved&rdquo;</figcaption>
     </figure>
   </div>
 </div></section>
 
-<section class="band mint"><div class="in">
-  <span class="eyebrow">Latency</span>
+<section class="band verm"><div class="in">
+  <span class="eyebrow" style="color:var(--ink)">Latency</span>
   <h2>Measured, not claimed</h2>
   <p>Two live calls came back at <b>724 ms</b> and <b>468 ms</b> for an uncached shopper. The prototype&rsquo;s own target was under 300 ms and it misses that, by 2.4x and 1.6x. Assembly and rendering are hundredths of a millisecond, so effectively all of it is the network round trip to Jev. A cached shopper costs nothing.</p>
   <p>That is slower than hoped and still a different category from generating a component tree token by token, which costs seconds and yields nothing you can measure afterwards.</p>

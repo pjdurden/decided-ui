@@ -1,42 +1,42 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 450" width="960" height="450" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,system-ui,sans-serif" role="img" aria-label="Anatomy of one decision, from a slot in the spec to a rendered component and an impression">
- <defs><marker id="n" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#9a9aa3"/></marker></defs>
- <rect width="960" height="450" fill="#fff"/>
+ <defs><marker id="n" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#8c8780"/></marker></defs>
+ <rect width="960" height="450" fill="#faf7f2"/>
 
- <rect x="32" y="48" width="200" height="90" rx="11" fill="#fffdfb" stroke="#e0dbd7"/>
- <text x="48" y="74" font-size="12" font-weight="700" fill="#a1336a" letter-spacing="1">1 SLOT</text>
- <text x="48" y="99" font-size="13.5" fill="#141416" font-family="ui-monospace,Menlo,monospace">variant(Hero, ...)</text>
- <text x="48" y="120" font-size="12.5" fill="#6b6b73">two options, one default</text>
+ <rect x="32" y="48" width="200" height="90" rx="11" fill="#faf7f2" stroke="#ddd7d0"/>
+ <text x="48" y="74" font-size="12" font-weight="700" fill="#c43a12" letter-spacing="1">1 SLOT</text>
+ <text x="48" y="99" font-size="13.5" fill="#121110" font-family="ui-monospace,Menlo,monospace">variant(Hero, ...)</text>
+ <text x="48" y="120" font-size="12.5" fill="#6a6660">two options, one default</text>
 
- <rect x="286" y="48" width="242" height="90" rx="11" fill="#fffdfb" stroke="#e0dbd7"/>
- <text x="302" y="74" font-size="12" font-weight="700" fill="#a1336a" letter-spacing="1">2 QUESTION</text>
- <text x="302" y="99" font-size="13.5" fill="#141416">type: choice, with your</text>
- <text x="302" y="119" font-size="13.5" fill="#141416">criteria sent verbatim</text>
+ <rect x="286" y="48" width="242" height="90" rx="11" fill="#faf7f2" stroke="#ddd7d0"/>
+ <text x="302" y="74" font-size="12" font-weight="700" fill="#c43a12" letter-spacing="1">2 QUESTION</text>
+ <text x="302" y="99" font-size="13.5" fill="#121110">type: choice, with your</text>
+ <text x="302" y="119" font-size="13.5" fill="#121110">criteria sent verbatim</text>
 
- <rect x="582" y="48" width="236" height="152" rx="11" fill="#fffdfb" stroke="#e0dbd7"/>
- <text x="598" y="74" font-size="12" font-weight="700" fill="#a1336a" letter-spacing="1">3 ANSWER</text>
- <text x="598" y="99" font-size="13" fill="#6b6b73">specTable</text>
- <rect x="598" y="106" width="176" height="8" rx="4" fill="#efe6ea"/><rect x="598" y="106" width="155" height="8" rx="4" fill="#a1336a"/>
- <text x="782" y="114" font-size="12" fill="#6b6b73">.88</text>
- <text x="598" y="138" font-size="13" fill="#6b6b73">bigImage</text>
- <rect x="598" y="145" width="176" height="8" rx="4" fill="#efe6ea"/><rect x="598" y="145" width="21" height="8" rx="4" fill="#d79cb8"/>
- <text x="782" y="153" font-size="12" fill="#6b6b73">.12</text>
- <text x="598" y="180" font-size="12.5" fill="#141416">confidence 0.81</text>
+ <rect x="582" y="48" width="236" height="152" rx="11" fill="#faf7f2" stroke="#ddd7d0"/>
+ <text x="598" y="74" font-size="12" font-weight="700" fill="#c43a12" letter-spacing="1">3 ANSWER</text>
+ <text x="598" y="99" font-size="13" fill="#6a6660">specTable</text>
+ <rect x="598" y="106" width="176" height="8" rx="4" fill="#f1ebe6"/><rect x="598" y="106" width="155" height="8" rx="4" fill="#c43a12"/>
+ <text x="782" y="114" font-size="12" fill="#6a6660">.88</text>
+ <text x="598" y="138" font-size="13" fill="#6a6660">bigImage</text>
+ <rect x="598" y="145" width="176" height="8" rx="4" fill="#f1ebe6"/><rect x="598" y="145" width="21" height="8" rx="4" fill="#ffa286"/>
+ <text x="782" y="153" font-size="12" fill="#6a6660">.12</text>
+ <text x="598" y="180" font-size="12.5" fill="#121110">confidence 0.81</text>
 
- <rect x="300" y="228" width="420" height="86" rx="11" fill="#fbe9ef" stroke="#e6c2d3"/>
- <text x="318" y="254" font-size="12" font-weight="700" fill="#a1336a" letter-spacing="1">4 GATE</text>
- <text x="318" y="278" font-size="13.5" fill="#141416">0.81 clears the floor, so the model's answer is used.</text>
- <text x="318" y="299" font-size="13" fill="#6b6b73">Below it the declared default renders instead, and the row is marked gated.</text>
+ <rect x="300" y="228" width="420" height="86" rx="11" fill="#ffeae3" stroke="#ffc7b6"/>
+ <text x="318" y="254" font-size="12" font-weight="700" fill="#c43a12" letter-spacing="1">4 GATE</text>
+ <text x="318" y="278" font-size="13.5" fill="#121110">0.81 clears the floor, so the model's answer is used.</text>
+ <text x="318" y="299" font-size="13" fill="#6a6660">Below it the declared default renders instead, and the row is marked gated.</text>
 
- <rect x="32" y="228" width="200" height="86" rx="11" fill="#fffdfb" stroke="#e0dbd7"/>
- <text x="48" y="254" font-size="12" font-weight="700" fill="#a1336a" letter-spacing="1">5 RENDER</text>
- <text x="48" y="279" font-size="13.5" fill="#141416" font-family="ui-monospace,Menlo,monospace">&lt;Hero variant=</text>
- <text x="48" y="299" font-size="13.5" fill="#141416" font-family="ui-monospace,Menlo,monospace">"specTable" /&gt;</text>
+ <rect x="32" y="228" width="200" height="86" rx="11" fill="#faf7f2" stroke="#ddd7d0"/>
+ <text x="48" y="254" font-size="12" font-weight="700" fill="#c43a12" letter-spacing="1">5 RENDER</text>
+ <text x="48" y="279" font-size="13.5" fill="#121110" font-family="ui-monospace,Menlo,monospace">&lt;Hero variant=</text>
+ <text x="48" y="299" font-size="13.5" fill="#121110" font-family="ui-monospace,Menlo,monospace">"specTable" /&gt;</text>
 
- <rect x="32" y="352" width="420" height="66" rx="11" fill="#fffdfb" stroke="#e0dbd7"/>
- <text x="48" y="378" font-size="12" font-weight="700" fill="#a1336a" letter-spacing="1">6 IMPRESSION</text>
- <text x="48" y="401" font-size="13" fill="#141416" font-family="ui-monospace,Menlo,monospace">{ decisionId, slot, variant, confidence, gated }</text>
+ <rect x="32" y="352" width="420" height="66" rx="11" fill="#faf7f2" stroke="#ddd7d0"/>
+ <text x="48" y="378" font-size="12" font-weight="700" fill="#c43a12" letter-spacing="1">6 IMPRESSION</text>
+ <text x="48" y="401" font-size="13" fill="#121110" font-family="ui-monospace,Menlo,monospace">{ decisionId, slot, variant, confidence, gated }</text>
 
- <g stroke="#9a9aa3" stroke-width="1.8" fill="none" marker-end="url(#n)">
+ <g stroke="#8c8780" stroke-width="1.8" fill="none" marker-end="url(#n)">
   <path d="M232 93 H280"/>
   <path d="M528 93 H576"/>
   <path d="M700 200 V222"/>
