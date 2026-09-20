@@ -1,28 +1,28 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 330" width="960" height="330" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,system-ui,sans-serif" role="img" aria-label="Package dependency graph: react, next and amplitude all depend on core">
- <defs><marker id="p" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#8b95a3"/></marker></defs>
+ <defs><marker id="p" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#9a9aa3"/></marker></defs>
  <rect width="960" height="330" fill="#fff"/>
- <rect x="330" y="30" width="300" height="94" rx="13" fill="#f6f9ff" stroke="#c7d7ff"/>
- <text x="352" y="58" font-size="15" font-weight="680" fill="#14161a">@decided-ui/core</text>
- <text x="352" y="80" font-size="13" fill="#5b6472">primitives, question compiler, typed</text>
- <text x="352" y="99" font-size="13" fill="#5b6472">answers, default assembler, Tracker</text>
- <text x="352" y="118" font-size="12.5" fill="#2563eb">pure, isomorphic, zero dependencies</text>
+ <rect x="330" y="30" width="300" height="94" rx="13" fill="#fbe9ef" stroke="#e6c2d3"/>
+ <text x="352" y="58" font-size="15" font-weight="680" fill="#141416">@decided-ui/core</text>
+ <text x="352" y="80" font-size="13" fill="#6b6b73">primitives, question compiler, typed</text>
+ <text x="352" y="99" font-size="13" fill="#6b6b73">answers, default assembler, Tracker</text>
+ <text x="352" y="118" font-size="12.5" fill="#a1336a">pure, isomorphic, zero dependencies</text>
 
- <g stroke="#8b95a3" stroke-width="1.8" fill="none" marker-end="url(#p)">
+ <g stroke="#9a9aa3" stroke-width="1.8" fill="none" marker-end="url(#p)">
   <path d="M150 210 V150 H470 V128"/><path d="M480 210 V132"/><path d="M810 210 V150 H490 V128"/>
  </g>
 
- <rect x="40" y="212" width="222" height="86" rx="13" fill="#f8fafc" stroke="#d7dce3"/>
- <text x="60" y="240" font-size="14.5" font-weight="660" fill="#14161a">@decided-ui/react</text>
- <text x="60" y="262" font-size="12.5" fill="#5b6472">Provider, Slot, useDecision,</text>
- <text x="60" y="280" font-size="12.5" fill="#5b6472">impression on mount</text>
+ <rect x="40" y="212" width="222" height="86" rx="13" fill="#fffdfb" stroke="#e0dbd7"/>
+ <text x="60" y="240" font-size="14.5" font-weight="660" fill="#141416">@decided-ui/react</text>
+ <text x="60" y="262" font-size="12.5" fill="#6b6b73">Provider, Slot, useDecision,</text>
+ <text x="60" y="280" font-size="12.5" fill="#6b6b73">impression on mount</text>
 
- <rect x="370" y="212" width="222" height="86" rx="13" fill="#f8fafc" stroke="#d7dce3"/>
- <text x="390" y="240" font-size="14.5" font-weight="660" fill="#14161a">@decided-ui/next</text>
- <text x="390" y="262" font-size="12.5" fill="#5b6472">route handler, server action,</text>
- <text x="390" y="280" font-size="12.5" fill="#5b6472">key handling, answer cache</text>
+ <rect x="370" y="212" width="222" height="86" rx="13" fill="#fffdfb" stroke="#e0dbd7"/>
+ <text x="390" y="240" font-size="14.5" font-weight="660" fill="#141416">@decided-ui/next</text>
+ <text x="390" y="262" font-size="12.5" fill="#6b6b73">route handler, server action,</text>
+ <text x="390" y="280" font-size="12.5" fill="#6b6b73">key handling, answer cache</text>
 
- <rect x="700" y="212" width="222" height="86" rx="13" fill="#f8fafc" stroke="#d7dce3"/>
- <text x="720" y="240" font-size="14.5" font-weight="660" fill="#14161a">@decided-ui/amplitude</text>
- <text x="720" y="262" font-size="12.5" fill="#5b6472">one adapter over Tracker.</text>
- <text x="720" y="280" font-size="12.5" fill="#5b6472">PostHog and Mixpanel follow</text>
+ <rect x="700" y="212" width="222" height="86" rx="13" fill="#fffdfb" stroke="#e0dbd7"/>
+ <text x="720" y="240" font-size="14.5" font-weight="660" fill="#141416">@decided-ui/amplitude</text>
+ <text x="720" y="262" font-size="12.5" fill="#6b6b73">one adapter over Tracker.</text>
+ <text x="720" y="280" font-size="12.5" fill="#6b6b73">PostHog and Mixpanel follow</text>
 </svg>

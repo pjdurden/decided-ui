@@ -4,7 +4,7 @@
       <path d="M0 0 L10 5 L0 10 z" fill="#9aa3af"/>
     </marker>
     <marker id="aBlue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-      <path d="M0 0 L10 5 L0 10 z" fill="#2563eb"/>
+      <path d="M0 0 L10 5 L0 10 z" fill="#a1336a"/>
     </marker>
   </defs>
   <rect width="980" height="600" fill="#ffffff"/>
@@ -14,49 +14,49 @@
     <path d="M755 205 L755 370"/>
     <path d="M580 445 L405 445"/>
   </g>
-  <path d="M225 370 L225 205" stroke="#2563eb" stroke-width="2.5" fill="none" marker-end="url(#aBlue)"/>
+  <path d="M225 370 L225 205" stroke="#a1336a" stroke-width="2.5" fill="none" marker-end="url(#aBlue)"/>
 
   <g>
-    <rect x="60" y="60" width="340" height="145" rx="14" fill="#f8fafc" stroke="#d7dce3"/>
-    <text x="84" y="94" font-size="13" font-weight="700" fill="#2563eb" letter-spacing="1.2">1 &#183; SPEC</text>
-    <text x="84" y="124" font-size="17" font-weight="640" fill="#14161a">You write the interfaces</text>
-    <text x="84" y="150" font-size="13.5" fill="#5b6472">spec.ts declares the slots and their</text>
-    <text x="84" y="170" font-size="13.5" fill="#5b6472">variants. components.tsx is ordinary</text>
-    <text x="84" y="190" font-size="13.5" fill="#5b6472">React. The two are type-checked together.</text>
+    <rect x="60" y="60" width="340" height="145" rx="14" fill="#fffdfb" stroke="#e0dbd7"/>
+    <text x="84" y="94" font-size="13" font-weight="700" fill="#a1336a" letter-spacing="1.2">1 &#183; SPEC</text>
+    <text x="84" y="124" font-size="17" font-weight="640" fill="#141416">You write the interfaces</text>
+    <text x="84" y="150" font-size="13.5" fill="#6b6b73">spec.ts declares the slots and their</text>
+    <text x="84" y="170" font-size="13.5" fill="#6b6b73">variants. components.tsx is ordinary</text>
+    <text x="84" y="190" font-size="13.5" fill="#6b6b73">React. The two are type-checked together.</text>
   </g>
 
   <g>
-    <rect x="580" y="60" width="340" height="145" rx="14" fill="#f8fafc" stroke="#d7dce3"/>
-    <text x="604" y="94" font-size="13" font-weight="700" fill="#2563eb" letter-spacing="1.2">2 &#183; DECIDE</text>
-    <text x="604" y="124" font-size="17" font-weight="640" fill="#14161a">One model call, on the server</text>
-    <text x="604" y="150" font-size="13.5" fill="#5b6472">Every slot becomes a question. They are</text>
-    <text x="604" y="170" font-size="13.5" fill="#5b6472">answered in parallel, then plain code</text>
-    <text x="604" y="190" font-size="13.5" fill="#5b6472">applies your policy. Nothing is generated.</text>
+    <rect x="580" y="60" width="340" height="145" rx="14" fill="#fffdfb" stroke="#e0dbd7"/>
+    <text x="604" y="94" font-size="13" font-weight="700" fill="#a1336a" letter-spacing="1.2">2 &#183; DECIDE</text>
+    <text x="604" y="124" font-size="17" font-weight="640" fill="#141416">One model call, on the server</text>
+    <text x="604" y="150" font-size="13.5" fill="#6b6b73">Every slot becomes a question. They are</text>
+    <text x="604" y="170" font-size="13.5" fill="#6b6b73">answered in parallel, then plain code</text>
+    <text x="604" y="190" font-size="13.5" fill="#6b6b73">applies your policy. Nothing is generated.</text>
   </g>
 
   <g>
-    <rect x="580" y="370" width="340" height="145" rx="14" fill="#f8fafc" stroke="#d7dce3"/>
-    <text x="604" y="404" font-size="13" font-weight="700" fill="#2563eb" letter-spacing="1.2">3 &#183; RENDER</text>
-    <text x="604" y="434" font-size="17" font-weight="640" fill="#14161a">Your components, rearranged</text>
-    <text x="604" y="460" font-size="13.5" fill="#5b6472">&lt;Slot/&gt; mounts the chosen variant and</text>
-    <text x="604" y="480" font-size="13.5" fill="#5b6472">fires one impression carrying the</text>
-    <text x="604" y="500" font-size="13.5" fill="#5b6472">decision id. The page cannot be malformed.</text>
+    <rect x="580" y="370" width="340" height="145" rx="14" fill="#fffdfb" stroke="#e0dbd7"/>
+    <text x="604" y="404" font-size="13" font-weight="700" fill="#a1336a" letter-spacing="1.2">3 &#183; RENDER</text>
+    <text x="604" y="434" font-size="17" font-weight="640" fill="#141416">Your components, rearranged</text>
+    <text x="604" y="460" font-size="13.5" fill="#6b6b73">&lt;Slot/&gt; mounts the chosen variant and</text>
+    <text x="604" y="480" font-size="13.5" fill="#6b6b73">fires one impression carrying the</text>
+    <text x="604" y="500" font-size="13.5" fill="#6b6b73">decision id. The page cannot be malformed.</text>
   </g>
 
   <g>
-    <rect x="60" y="370" width="340" height="145" rx="14" fill="#f8fafc" stroke="#d7dce3"/>
-    <text x="84" y="404" font-size="13" font-weight="700" fill="#2563eb" letter-spacing="1.2">4 &#183; MEASURE</text>
-    <text x="84" y="434" font-size="17" font-weight="640" fill="#14161a">Which interface actually won</text>
-    <text x="84" y="460" font-size="13.5" fill="#5b6472">Conversions join back to the variant that</text>
-    <text x="84" y="480" font-size="13.5" fill="#5b6472">produced them, in Amplitude or wherever</text>
-    <text x="84" y="500" font-size="13.5" fill="#5b6472">your funnels already live.</text>
+    <rect x="60" y="370" width="340" height="145" rx="14" fill="#fffdfb" stroke="#e0dbd7"/>
+    <text x="84" y="404" font-size="13" font-weight="700" fill="#a1336a" letter-spacing="1.2">4 &#183; MEASURE</text>
+    <text x="84" y="434" font-size="17" font-weight="640" fill="#141416">Which interface actually won</text>
+    <text x="84" y="460" font-size="13.5" fill="#6b6b73">Conversions join back to the variant that</text>
+    <text x="84" y="480" font-size="13.5" fill="#6b6b73">produced them, in Amplitude or wherever</text>
+    <text x="84" y="500" font-size="13.5" fill="#6b6b73">your funnels already live.</text>
   </g>
 
-  <text x="490" y="114" font-size="13" fill="#6b7280" text-anchor="middle">user state</text>
-  <text x="786" y="295" font-size="13" fill="#6b7280" text-anchor="middle">a Decision</text>
-  <text x="468" y="429" font-size="12.5" fill="#6b7280" text-anchor="middle">impressions and conversions</text>
-  <text x="244" y="281" font-size="13.5" font-weight="620" fill="#2563eb">you rewrite one</text>
-  <text x="244" y="301" font-size="13.5" font-weight="620" fill="#2563eb">criteria string</text>
+  <text x="490" y="114" font-size="13" fill="#6b6b73" text-anchor="middle">user state</text>
+  <text x="786" y="295" font-size="13" fill="#6b6b73" text-anchor="middle">a Decision</text>
+  <text x="468" y="429" font-size="12.5" fill="#6b6b73" text-anchor="middle">impressions and conversions</text>
+  <text x="244" y="281" font-size="13.5" font-weight="620" fill="#a1336a">you rewrite one</text>
+  <text x="244" y="301" font-size="13.5" font-weight="620" fill="#a1336a">criteria string</text>
 
-  <text x="490" y="566" font-size="13.5" fill="#6b7280" text-anchor="middle">Generative UI cannot close this loop. There is no variant to measure, only markup that will never appear again.</text>
+  <text x="490" y="566" font-size="13.5" fill="#6b6b73" text-anchor="middle">Generative UI cannot close this loop. There is no variant to measure, only markup that will never appear again.</text>
 </svg>

@@ -14,50 +14,57 @@
   <a class="brand" href="index.html">decided<span>-ui</span></a>
   <nav><a href="index.html" class="on">Overview</a><a href="concepts.html">Concepts</a><a href="spec.html">Spec API</a><a href="architecture.html">Architecture</a><a href="jev.html">Jev</a><a href="measurement.html">Measurement</a><a href="roadmap.html">Roadmap</a></nav>
 </div></div>
-<main class="wrap"><section class="hero">
-  <div class="eyebrow">decided-ui</div>
+<main class="wrap"><section class="hero band"><div class="in">
+  <span class="eyebrow">decided-ui</span>
   <h1>The model chooses among interfaces you wrote.</h1>
   <p class="lede">Not generated markup. Named variants, type-checked against your components, decided by <a href="jev.html">Jev</a> in a single call, and measured so you learn which one actually won.</p>
   <div class="cta">
     <a class="go" href="concepts.html">Read the concepts</a>
     <a class="ghost" href="https://github.com/pjdurden/decided-ui">GitHub</a>
   </div>
-</section>
+  <div class="warn"><b>Status: design and working prototype.</b> The loop below is proven end to end in a Python prototype, and the latency figures on this site are measured rather than estimated. The TypeScript framework described in these docs is <b>not built yet</b>. See the <a href="roadmap.html">roadmap</a>. Nothing here is installable today.</div>
+</div></section>
 
-<div class="warn"><b>Status: design and working prototype.</b> The loop below is proven end to end in a Python prototype, and the latency figures on this site are measured rather than estimated. The TypeScript framework described in these docs is <b>not built yet</b>. See the <a href="roadmap.html">roadmap</a>. Nothing here is installable today.</div>
-
-<h2>The idea</h2>
-<div class="contrast">
-  <div class="card">
-    <span class="tag">Generative UI</span>
-    <h3>The model writes the interface</h3>
-    <p>Seconds per page. Output has to be validated before it can be rendered. Every response is different, so there is nothing to compare and nothing to learn from.</p>
+<section class="band blush"><div class="in">
+  <span class="eyebrow">The idea</span>
+  <h2>Two ways to let a model touch your interface</h2>
+  <div class="contrast">
+    <div class="card">
+      <span class="tag">Generative UI</span>
+      <h3>The model writes the interface</h3>
+      <p>Seconds per page. Output has to be validated before it can be rendered. Every response is different, so there is nothing to compare and nothing to learn from.</p>
+    </div>
+    <div class="card on">
+      <span class="tag">Decided UI</span>
+      <h3>The model picks from what you built</h3>
+      <p>One round trip. Cannot produce an interface that does not exist. Every choice has a name, so you can ask which name converted better.</p>
+    </div>
   </div>
-  <div class="card on">
-    <span class="tag">Decided UI</span>
-    <h3>The model picks from what you built</h3>
-    <p>One round trip. Cannot produce an interface that does not exist. Every choice has a name, so you can ask which name converted better.</p>
-  </div>
-</div>
-<p>That last sentence is the whole argument. A generative interface cannot be A/B tested even in principle, because the thing it produced will never be produced again. A decided interface is a variant with an id, which every analytics tool you already use knows how to count.</p>
+  <p>That last sentence is the whole argument. A generative interface cannot be A/B tested even in principle, because the thing it produced will never be produced again. A decided interface is a variant with an id, which every analytics tool you already use knows how to count.</p>
+</div></section>
 
-<h2>The loop</h2>
-<figure>
-  <img src="loop.svg" alt="A four stage cycle: spec, decide, render, measure, and back to spec.">
-  <figcaption>The measurement stage is what makes this a paradigm rather than a trick. Without it, &ldquo;AI chose your layout&rdquo; is an unfalsifiable claim. <a href="measurement.html">How measurement works</a>.</figcaption>
-</figure>
+<section class="band"><div class="in">
+  <span class="eyebrow">How it works</span>
+  <h2>The loop</h2>
+  <figure>
+    <img src="loop.svg" alt="A four stage cycle: spec, decide, render, measure, and back to spec.">
+    <figcaption>The measurement stage is what makes this a paradigm rather than a trick. Without it, &ldquo;AI chose your layout&rdquo; is an unfalsifiable claim. <a href="measurement.html">How measurement works</a>.</figcaption>
+  </figure>
+</div></section>
 
-<h2>What you write</h2>
-<ol class="steps">
-  <li><b>Define the spec.</b> <span>Slots, their variants, and a plain-English criterion for each. The criterion is both the documentation and the question the model is asked. <a href="spec.html">Spec API</a>.</span></li>
-  <li><b>Write the components.</b> <span>Ordinary React, one per variant. Nothing in them knows a model exists.</span></li>
-  <li><b>Write the assembler, or skip it.</b> <span>Confidence floors, caps, ordering, fallbacks. A working default ships, so most people never write this. <a href="concepts.html#assembler">How the assembler works</a>.</span></li>
-  <li><b>Wire the decider.</b> <span>One line in a route handler. The key stays on the server. <a href="architecture.html">Architecture</a>.</span></li>
-  <li><b>Read the results.</b> <span>Impressions and conversions land in Amplitude joined by a decision id.</span></li>
-</ol>
+<section class="band sky"><div class="in">
+  <span class="eyebrow">Five steps</span>
+  <h2>What you write</h2>
+  <ol class="steps">
+    <li><b>Define the spec.</b> <span>Slots, their variants, and a plain-English criterion for each. The criterion is both the documentation and the question the model is asked. <a href="spec.html">Spec API</a>.</span></li>
+    <li><b>Write the components.</b> <span>Ordinary React, one per variant. Nothing in them knows a model exists.</span></li>
+    <li><b>Write the assembler, or skip it.</b> <span>Confidence floors, caps, ordering, fallbacks. A working default ships, so most people never write this. <a href="concepts.html#assembler">How the assembler works</a>.</span></li>
+    <li><b>Wire the decider.</b> <span>One line in a route handler. The key stays on the server. <a href="architecture.html">Architecture</a>.</span></li>
+    <li><b>Read the results.</b> <span>Impressions and conversions land in Amplitude joined by a decision id.</span></li>
+  </ol>
 
-<h3>The spec is TypeScript, and that is the point</h3>
-<pre><code>export const spec = defineSpec({
+  <h3>The spec is TypeScript, and that is the point</h3>
+  <pre><code>export const spec = defineSpec({
   hero: variant(Hero, {
     question: "Which opening treatment fits this shopper?",
     default: "bigImage",
@@ -76,36 +83,45 @@
     question: "How central is each of these to this shopper's decision?",
   }),
 })</code></pre>
-<p>The keys of <code>options</code> are constrained to <code>Hero</code>&rsquo;s own variant union. Rename a variant and the spec stops compiling. Delete a component and you find out at build time, not when a user hits the page.</p>
+  <p>The keys of <code>options</code> are constrained to <code>Hero</code>&rsquo;s own variant union. Rename a variant and the spec stops compiling. Delete a component and you find out at build time, not when a user hits the page.</p>
+</div></section>
 
-<h2>The prototype, which exists</h2>
-<p>A working Python prototype assembles a product page from pre-built fragments. One batched call to Jev answers twelve questions about a shopper in parallel, then deterministic code picks the layout, the variants, what to hide and what order to put things in. These four pages are the same product and the same components, decided differently. No branch was written for any of them.</p>
+<section class="band"><div class="in">
+  <span class="eyebrow">Evidence</span>
+  <h2>The prototype, which exists</h2>
+  <p>A working Python prototype assembles a product page from pre-built fragments. One batched call to Jev answers twelve questions about a shopper in parallel, then deterministic code picks the layout, the variants, what to hide and what order to put things in. These four pages are the same product and the same components, decided differently. No branch was written for any of them.</p>
+  <div class="shots">
+    <figure>
+      <img src="img/layout-media-left.png" alt="A product page with the photo on the left and details on the right.">
+      <figcaption><b>media_left</b>: &ldquo;browsing after work with no particular plan&rdquo;</figcaption>
+    </figure>
+    <figure>
+      <img src="img/layout-dense-compare.png" alt="A dense two column comparison layout with a small photo.">
+      <figcaption><b>dense_compare</b>: &ldquo;comparing four models on a spreadsheet right now&rdquo;</figcaption>
+    </figure>
+    <figure>
+      <img src="img/layout-editorial.png" alt="An editorial layout with a centred title and a full width photo.">
+      <figcaption><b>editorial</b>: &ldquo;not sure they need one, would like to be shown what it is like to live with&rdquo;</figcaption>
+    </figure>
+    <figure>
+      <img src="img/layout-fast-checkout.png" alt="A compact layout with a buy button pinned above everything.">
+      <figcaption><b>fast_checkout</b>: &ldquo;it died yesterday, needs a replacement today, card saved&rdquo;</figcaption>
+    </figure>
+  </div>
+</div></section>
 
-<div class="shots">
-  <figure>
-    <img src="img/layout-media-left.png" alt="A product page with the photo on the left and details on the right.">
-    <figcaption><b>media_left</b>: &ldquo;browsing after work with no particular plan&rdquo;</figcaption>
-  </figure>
-  <figure>
-    <img src="img/layout-dense-compare.png" alt="A dense two column comparison layout with a small photo.">
-    <figcaption><b>dense_compare</b>: &ldquo;comparing four models on a spreadsheet right now&rdquo;</figcaption>
-  </figure>
-  <figure>
-    <img src="img/layout-editorial.png" alt="An editorial layout with a centred title and a full width photo.">
-    <figcaption><b>editorial</b>: &ldquo;not sure they need one, would like to be shown what it is like to live with&rdquo;</figcaption>
-  </figure>
-  <figure>
-    <img src="img/layout-fast-checkout.png" alt="A compact layout with a buy button pinned above everything.">
-    <figcaption><b>fast_checkout</b>: &ldquo;it died yesterday, needs a replacement today, card saved&rdquo;</figcaption>
-  </figure>
-</div>
+<section class="band mint"><div class="in">
+  <span class="eyebrow">Latency</span>
+  <h2>Measured, not claimed</h2>
+  <p>Two live calls came back at <b>724 ms</b> and <b>468 ms</b> for an uncached shopper. The prototype&rsquo;s own target was under 300 ms and it misses that, by 2.4x and 1.6x. Assembly and rendering are hundredths of a millisecond, so effectively all of it is the network round trip to Jev. A cached shopper costs nothing.</p>
+  <p>That is slower than hoped and still a different category from generating a component tree token by token, which costs seconds and yields nothing you can measure afterwards.</p>
+</div></section>
 
-<h3>Measured, not claimed</h3>
-<p>Two live calls came back at <b>724 ms</b> and <b>468 ms</b> for an uncached shopper. The prototype&rsquo;s own target was under 300 ms and it misses that, by 2.4x and 1.6x. Assembly and rendering are hundredths of a millisecond, so effectively all of it is the network round trip to Jev. A cached shopper costs nothing.</p>
-<p>That is slower than hoped and still a different category from generating a component tree token by token, which costs seconds and yields nothing you can measure afterwards.</p>
-
-<h2>What this is not</h2>
-<p>Not an experimentation platform: it emits events and leaves assignment, storage and reporting to the tool you already pay for. Not a component library: you write the components. Not a way to avoid design work: someone still has to build every variant, and writing criteria that genuinely discriminate is the real labour. In the prototype, two slots barely move because their criteria are too vague, which is exactly the failure mode to expect. <a href="comparison.html">How this compares to the alternatives</a>.</p>
+<section class="band"><div class="in">
+  <span class="eyebrow">Scope</span>
+  <h2>What this is not</h2>
+  <p>Not an experimentation platform: it emits events and leaves assignment, storage and reporting to the tool you already pay for. Not a component library: you write the components. Not a way to avoid design work: someone still has to build every variant, and writing criteria that genuinely discriminate is the real labour. In the prototype, two slots barely move because their criteria are too vague, which is exactly the failure mode to expect. <a href="comparison.html">How this compares to the alternatives</a>.</p>
+</div></section>
 </main>
 <footer><div class="inner">
   <p>decided-ui &#183; <a href="https://github.com/pjdurden/decided-ui">github.com/pjdurden/decided-ui</a>
