@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Measurement - decided-ui</title>
+<meta name="description" content="The Tracker contract, impression discipline, and joining conversions to variants.">
+<meta property="og:title" content="Measurement">
+<meta property="og:description" content="The Tracker contract, impression discipline, and joining conversions to variants.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="top"><div class="inner">
+  <a class="brand" href="index.html">decided<span>-ui</span></a>
+  <nav><a href="index.html">Overview</a><a href="concepts.html">Concepts</a><a href="spec.html">Spec API</a><a href="architecture.html">Architecture</a><a href="jev.html">Jev</a><a href="measurement.html" class="on">Measurement</a><a href="roadmap.html">Roadmap</a></nav>
+</div></div>
+<div class="shell"><aside class="side"><h5>Start here</h5>
+<a href="index.html">Overview</a>
+<a href="concepts.html">Concepts</a>
+<h5>Reference</h5>
+<a href="spec.html">Spec API</a>
+<a href="architecture.html">Architecture</a>
+<a href="jev.html">Jev</a>
+<a href="measurement.html" class="on">Measurement</a>
+<h5>Context</h5>
+<a href="comparison.html">Comparison</a>
+<a href="roadmap.html">Roadmap</a></aside><main class="doc"><h1>Measurement</h1>
+<p class="lede">Two event types and one shared id are enough to ask which interface won. This is the capability generative UI does not have.</p>
+
+<h2 id="why">Why this is the whole point</h2>
+<p>If a model generates an interface, you can tell whether that session converted. You cannot tell whether the interface was why, because the thing it produced has no name and will never be produced again. There is nothing to aggregate.</p>
+<p>A decided interface is a small set of named variants. Every impression is a row saying which variant a person saw. Every conversion is a row saying what they then did. Joining the two is an ordinary funnel question that Amplitude, PostHog and Mixpanel have answered for a decade.</p>
+<figure>
+  <img src="join.svg" alt="An impression and a conversion joined on a decision id, producing conversion rate per variant.">
+  <figcaption>No custom instrumentation. The join key is created when the decision is made.</figcaption>
+</figure>
+
+<h2 id="contract">The Tracker contract</h2>
+<pre><code>interface Tracker {
+  impression(e: {
+    decisionId: string       // unique per decision
+    specVersion: string      // hash of the spec that produced it
+    slot: string             // "hero"
+    variant: string          // "specTable"
+    confidence: number       // 0 to 1
+    gated: boolean           // true when the default was used instead
+    gatedReason?: "low_confidence" | "no_answer" | "undeclared_option"
+  }): void
+
+  conversion(e: {
+    decisionId: string
+    event: string            // "purchase", "signup", whatever you count
+    props?: Record&lt;string, unknown&gt;
+  }): void
+
+  identify?(userId: string): void
+}</code></pre>
+<p>Four methods, one of them optional. An adapter for a provider you already use is an afternoon, and the Amplitude one ships first.</p>
+
+<pre><code>import { Provider } from "@decided-ui/react"
+import { amplitudeTracker } from "@decided-ui/amplitude"
+
+&lt;Provider decision={decision} tracker={amplitudeTracker(amplitude)}&gt;</code></pre>
+
+<h2 id="discipline">Impression discipline</h2>
+<p>Exactly one impression per slot per decision, fired on mount, never on re-render. This sounds like a detail and it is actually the whole integrity of the numbers: a slot inside a component that re-renders on every keystroke will otherwise report a hundred impressions for one view, and every conversion rate you compute afterwards will be wrong in a way that looks plausible.</p>
+<p><code>&lt;Slot&gt;</code> handles this for you. If you render a decided variant by hand rather than through <code>&lt;Slot&gt;</code>, you own the deduplication, and the framework cannot help you.</p>
+<div class="note"><b>Gated impressions still fire.</b> When the gate fires, the impression records the default that actually rendered, with <code>gated: true</code> and the reason. You want those in the data: a slot that is gated forty per cent of the time has criteria that are not discriminating, and that is a finding about your spec, not noise to filter out.</div>
+
+<h2 id="questions">Questions you can answer on day one</h2>
+<table>
+  <tr><th>Question</th><th>How</th></tr>
+  <tr><td>Which hero converts better?</td><td>conversion rate grouped by <code>variant</code> where <code>slot = "hero"</code></td></tr>
+  <tr><td>Is the model beating a fixed default?</td><td>compare <code>gated: true</code> impressions against <code>gated: false</code> for the same slot and variant</td></tr>
+  <tr><td>Is this slot worth the call?</td><td>if every variant converts within noise of the others, delete the slot and ship the default</td></tr>
+  <tr><td>Did rewriting a criterion help?</td><td>segment by <code>specVersion</code>, which changes when the criterion text does</td></tr>
+  <tr><td>Where is the model unsure?</td><td>distribution of <code>confidence</code> per slot; a slot clustered near the floor needs better criteria</td></tr>
+</table>
+<p>The second row is the one people forget to ask, and it is the honest one. The gate means a meaningful share of your traffic already sees the declared default, which gives you a control group you did not have to construct.</p>
+
+<h2 id="loop">Closing the loop</h2>
+<p>The framework stops at emitting events. It does not store outcomes, run assignment, or tell you which variant won. That is deliberate: building those things means building an experimentation platform, and you already pay for one.</p>
+<p>What you do with the numbers is the part that makes this a paradigm rather than a party trick:</p>
+<ol>
+  <li>A variant loses consistently. Delete it. The spec shrinks and every future call gets cheaper.</li>
+  <li>A slot never discriminates. Delete the slot. You were paying for a question with no answer.</li>
+  <li>A slot is gated constantly. Rewrite the criteria as concrete situations rather than degrees, and watch <code>specVersion</code> change so you can measure whether it helped.</li>
+  <li>A variant wins for one segment and loses for another. That is not a variant to delete, that is a criterion to sharpen.</li>
+</ol>
+<p>None of these steps are automated, and none of them should be. They are design decisions informed by evidence, which is the thing the industry has been trying to get back to since personalisation became a black box.</p>
+
+<h2 id="privacy">Privacy</h2>
+<p>The state you send is whatever you choose to send. The spec is the contract for what is actually read, so it doubles as an auditable list of what leaves your servers. Send a summary rather than raw PII where you can: it is usually a better question anyway, because &ldquo;comparing several models on price&rdquo; discriminates and an email address does not.</p>
+<p>Impressions carry no user data of their own beyond the decision id. Joining to a person happens in your analytics tool, under whatever identity model you already operate.</p>
+</main></div>
+<footer><div class="inner">
+  <p>decided-ui &#183; <a href="https://github.com/pjdurden/decided-ui">github.com/pjdurden/decided-ui</a>
+     &#183; MIT</p>
+  <p>Design and prototype. The TypeScript packages described here are not built yet.
+     Decisions are made by <a href="https://typesafe.ai">Jev</a>, TypeSafe's System One model.</p>
+</div></footer>
+</body>
+</html>

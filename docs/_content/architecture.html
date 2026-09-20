@@ -1,0 +1,73 @@
+<h1>Architecture</h1>
+<p class="lede">Four packages, one round trip, and a strict line between what the model decides and what your code decides.</p>
+
+<h2 id="principle">The organising principle</h2>
+<p>Code owns control flow. The model appears only where the system needs a judgment about a person, and it never returns anything but a typed answer. Everything downstream of that answer, including every rule about what your page looks like, is deterministic and testable without a network.</p>
+<p>Concretely, this means the model can influence your interface in exactly one way: by moving probability mass between options you declared. It cannot name a component that does not exist, cannot invent a prop, and cannot emit markup. That is a structural guarantee, not a validation step you could forget to run.</p>
+
+<h2 id="lifecycle">Request lifecycle</h2>
+<figure>
+  <img src="lifecycle.svg" alt="A request crossing browser, your server, Jev and analytics, with timings.">
+  <figcaption>One network call to Jev per uncached visitor. Everything either side of it is local.</figcaption>
+</figure>
+<ol>
+  <li><b>Your server receives a request</b> with whatever you know about the visitor: a session summary, plan tier, referrer, cart contents. You choose what goes in; the spec decides what is actually read.</li>
+  <li><b>The compiler walks the spec</b> and turns every slot into one question. This is pure and synchronous.</li>
+  <li><b>One POST to Jev.</b> All questions travel together and are answered in parallel.</li>
+  <li><b>The answers are parsed into typed objects.</b> A malformed or partial body raises a single error type rather than escaping as whatever the JSON parser threw.</li>
+  <li><b>The assembler applies your policy</b> and produces a <code>Decision</code>. No I/O, fully deterministic.</li>
+  <li><b>The client renders</b> the chosen variants and fires one impression per slot.</li>
+</ol>
+
+<h2 id="packages">Packages</h2>
+<figure>
+  <img src="packages.svg" alt="react, next and amplitude packages all depending on a single core package.">
+  <figcaption>Everything depends on core. Core depends on nothing.</figcaption>
+</figure>
+<table>
+  <tr><th>Package</th><th>Contains</th><th>Runs</th></tr>
+  <tr><td><code>@decided-ui/core</code></td><td>the four primitives, the question compiler, answer types, the default assembler, the <code>Tracker</code> interface</td><td>anywhere. No React, no server, no dependencies</td></tr>
+  <tr><td><code>@decided-ui/react</code></td><td><code>&lt;Provider&gt;</code>, <code>&lt;Slot&gt;</code>, <code>useDecision()</code>, <code>track()</code>, impression-on-mount</td><td>client</td></tr>
+  <tr><td><code>@decided-ui/next</code></td><td>route handler factory, App Router server action, key handling, answer cache</td><td>server</td></tr>
+  <tr><td><code>@decided-ui/amplitude</code></td><td>one adapter over <code>Tracker</code></td><td>client, or server if you prefer</td></tr>
+</table>
+<p>The split is deliberate. Core being isomorphic and dependency-free means the assembler can be unit tested in milliseconds, the spec can be shared between server and client for type inference, and an adapter for Remix or Express is a small file rather than a fork.</p>
+
+<h2 id="server">The server side</h2>
+<p>The decide call must run on a server because the API key must not reach the browser. With the Next adapter that is one line:</p>
+<pre><code>// app/api/decide/route.ts
+import { createDecideHandler } from "@decided-ui/next"
+import { spec } from "@/ui/spec"
+
+export const POST = createDecideHandler({ spec })</code></pre>
+<p>Or, in a server component, skip the round trip entirely and decide during render:</p>
+<pre><code>// app/product/[id]/page.tsx
+import { decide } from "@decided-ui/next"
+import { spec } from "@/ui/spec"
+
+export default async function Page() {
+  const decision = await decide(spec, { shopper: await profileFor(cookies()) })
+  return &lt;Provider decision={decision}&gt;&lt;ProductPage /&gt;&lt;/Provider&gt;
+}</code></pre>
+<p>Adapters for Express and Remix are the same shape and are planned for the same phase.</p>
+
+<h2 id="cache">Caching</h2>
+<p>The cache key is a hash of the state fields the spec actually references, not of the whole state object. Two visitors whose differences your spec never reads are the same visitor as far as the model is concerned, and should cost one call between them.</p>
+<p>Answer maps are cached rather than rendered output, so editing a component or an assembler rule takes effect immediately without spending another call. In the prototype this is an in-process map; for anything real it belongs in Redis with a TTL, and the adapter takes a pluggable store.</p>
+
+<h2 id="failure">Failure behaviour</h2>
+<p>The framework is designed so that every failure mode renders a correct page.</p>
+<table>
+  <tr><th>What went wrong</th><th>What renders</th></tr>
+  <tr><td>Jev is unreachable, or times out</td><td>every slot falls back to its declared default</td></tr>
+  <tr><td>A 200 response with an unparseable body</td><td>same, via a single typed error</td></tr>
+  <tr><td>An answer is missing for one slot</td><td>that slot falls back; the others are unaffected</td></tr>
+  <tr><td>The model names an option that is not declared</td><td>the default, marked gated</td></tr>
+  <tr><td>Confidence below the floor</td><td>the default, marked gated</td></tr>
+  <tr><td>No API key configured</td><td>the default page, every slot gated. The app still boots.</td></tr>
+</table>
+<p>There is no state in which the page is broken because the model was. The worst case is your default interface, which is the one you would have shipped anyway.</p>
+
+<h2 id="testing">Testability</h2>
+<p>The assembler is a pure function from an answer map to a page, so its entire policy is unit testable with hand-written answers and no network. In the prototype that is eighteen tests covering the gate, the ordering, the caps and every fallback, and they run in under a tenth of a second.</p>
+<p>The React layer ships a mock decider, so an app can be developed and its tests run with no key, no network and no cost. Fixing the answers also makes visual regression testing meaningful: the same answers must always produce the same page.</p>

@@ -1,0 +1,87 @@
+<h1>Jev, the decision engine</h1>
+<p class="lede">Why a System One model rather than an LLM, and exactly what comes back.</p>
+
+<p>decided-ui delegates every judgment to <a href="https://typesafe.ai">Jev</a>, TypeSafe&rsquo;s System One model. Jev does not write text. You give it state and a set of typed questions, and it returns typed answers with calibrated probabilities. That property is what the whole framework is built on.</p>
+
+<h2 id="why">Why not just call an LLM</h2>
+<p>You could ask GPT or Claude &ldquo;which hero should I show this shopper&rdquo; and parse the reply. Four things go wrong, and each of them is load-bearing here.</p>
+<table>
+  <tr><th></th><th>An LLM</th><th>Jev</th></tr>
+  <tr><td>Returns</td><td>text you must parse, or JSON you must validate</td><td>a typed answer, by construction</td></tr>
+  <tr><td>Uncertainty</td><td>a number it wrote, uncorrelated with being right</td><td>a distribution over the options you declared</td></tr>
+  <tr><td>Twelve questions</td><td>twelve calls, or one long prompt that degrades</td><td>one call, answered in parallel</td></tr>
+  <tr><td>Latency</td><td>seconds</td><td>sub-second</td></tr>
+</table>
+<p>The second row is the one that matters most. The confidence gate is the mechanism that keeps a wrong model from producing a bad page, and it only works if the number it gates on means something. A self-reported confidence from a text model does not.</p>
+
+<h2 id="mapping">How the four primitives map</h2>
+<p>decided-ui&rsquo;s primitives are a thin, opinionated layer over Jev&rsquo;s three question types.</p>
+<table>
+  <tr><th>decided-ui</th><th>Jev type</th><th>Notes</th></tr>
+  <tr><td><code>variant()</code></td><td>Choice</td><td>criteria is a map of option name to description. Up to 255 options, though a UI slot with more than a handful is a design smell.</td></tr>
+  <tr><td><code>presence()</code></td><td>Noul</td><td>returns the probability of yes. Optional <code>true</code> and <code>false</code> descriptions sharpen it.</td></tr>
+  <tr><td><code>rank()</code></td><td>Score, one per item</td><td>each item gets its own comparable question, and code sorts the results.</td></tr>
+  <tr><td><code>intensity()</code></td><td>Score</td><td>criteria is an ordered list of level descriptions, up to ten.</td></tr>
+</table>
+
+<h2 id="wire">What actually goes over the wire</h2>
+<p>One <code>POST</code> to <code>https://api.typesafe.ai/v1/systemone</code> with a bearer token, carrying your state and every question at once.</p>
+<pre><code>{
+  "model": "jev-latest",
+  "state": { "shopper": { "summary": "Comparing four models on a spreadsheet." } },
+  "questions": {
+    "variant_hero": {
+      "type": "choice",
+      "instructions": "Which opening treatment fits this shopper?",
+      "criteria": {
+        "bigImage":  "Judges by look and brand feel, reads little detail",
+        "specTable": "Opens with numbers and compares models on specifications"
+      }
+    },
+    "presence_financing": {
+      "type": "noul",
+      "instructions": "Should a monthly instalment option be offered?"
+    },
+    "intensity_urgency": {
+      "type": "score",
+      "instructions": "How strongly should limited stock be signalled?",
+      "criteria": ["none", "soft", "urgent"]
+    }
+  }
+}</code></pre>
+
+<h3>And what comes back</h3>
+<pre><code>{
+  "model": "jev-1.13.0",
+  "answers": {
+    "variant_hero": {
+      "type": "choice",
+      "choice": "specTable",
+      "probabilities": { "bigImage": 0.12, "specTable": 0.88 },
+      "confidence": 0.81
+    },
+    "presence_financing": { "type": "noul", "noul": 0.22 },
+    "intensity_urgency": {
+      "type": "score",
+      "score": 0.35,
+      "probabilities": { "0": 0.7, "1": 0.25, "2": 0.05 },
+      "legend": { "0": "none", "1": "soft", "2": "urgent" },
+      "confidence": 0.62
+    }
+  },
+  "usage": { "input_tokens": 296, "output_tokens": 20 }
+}</code></pre>
+
+<div class="note"><b>Two details that trip people up.</b> A Noul returns a <b>probability</b>, not a boolean: <code>0.22</code> means probably not. A Score returns a <b>float</b> that is the probability-weighted mean of the level indices, not a level name: <code>0.35</code> sits between &ldquo;none&rdquo; and &ldquo;soft&rdquo;, nearer none. Different distributions can produce the same float, so read <code>probabilities</code> alongside it. Ordering sorts on that float directly, which is finer grained than an index and makes ties rare.</div>
+
+<h2 id="fanout">Twelve questions cost about what one costs</h2>
+<p>Questions in a single request are evaluated in parallel, so adding more has little effect on wall clock. That changes how you design: rather than asking a broad question and branching on the answer, you ask every narrow question up front, including ones that will turn out to be irrelevant, and throw away the answers you do not need in code.</p>
+<p>The prototype asks twelve questions on every uncached request. Several are about panels that may end up hidden. That is deliberate, and it is cheaper than the round trip it saves.</p>
+
+<h2 id="latency">Latency, honestly</h2>
+<p>TypeSafe documents a typical query at about 100 ms. The prototype&rsquo;s two live measurements, from a residential connection to the public endpoint, were <b>724 ms</b> and <b>468 ms</b> end to end for twelve questions. Assembly and rendering together are hundredths of a millisecond, so essentially all of it is the round trip.</p>
+<p>Both numbers miss the prototype&rsquo;s own 300 ms target. They are reported here rather than rounded away because a framework whose pitch is speed should publish the number that embarrasses it. Plan for the half-second, cache aggressively on the state fields your spec actually reads, and treat a repeat visitor as free.</p>
+
+<h2 id="keys">Where the key lives</h2>
+<p>The API key is read from the server environment and never reaches the browser. The decide call happens in a route handler or server action; the client receives a <code>Decision</code>, not a token. An upstream error body is redacted before it is ever surfaced, because a gateway that echoes request headers into an error response is not exotic.</p>
+<p>See <a href="architecture.html">architecture</a> for where each piece runs.</p>

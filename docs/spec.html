@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The spec API - decided-ui</title>
+<meta name="description" content="defineSpec, variant, presence, rank and intensity, in full.">
+<meta property="og:title" content="The spec API">
+<meta property="og:description" content="defineSpec, variant, presence, rank and intensity, in full.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="top"><div class="inner">
+  <a class="brand" href="index.html">decided<span>-ui</span></a>
+  <nav><a href="index.html">Overview</a><a href="concepts.html">Concepts</a><a href="spec.html" class="on">Spec API</a><a href="architecture.html">Architecture</a><a href="jev.html">Jev</a><a href="measurement.html">Measurement</a><a href="roadmap.html">Roadmap</a></nav>
+</div></div>
+<div class="shell"><aside class="side"><h5>Start here</h5>
+<a href="index.html">Overview</a>
+<a href="concepts.html">Concepts</a>
+<h5>Reference</h5>
+<a href="spec.html" class="on">Spec API</a>
+<a href="architecture.html">Architecture</a>
+<a href="jev.html">Jev</a>
+<a href="measurement.html">Measurement</a>
+<h5>Context</h5>
+<a href="comparison.html">Comparison</a>
+<a href="roadmap.html">Roadmap</a></aside><main class="doc"><h1>The spec API</h1>
+<p class="lede">One file declares every decision your interface is willing to delegate. It is TypeScript, so it is checked against your components.</p>
+<div class="warn">This is a design reference for a package that is <b>not built yet</b>. Signatures may change before P1 ships. See the <a href="roadmap.html">roadmap</a>.</div>
+
+<h2 id="defineSpec">defineSpec</h2>
+<pre><code>import { defineSpec, variant, presence, rank, intensity } from "@decided-ui/core"
+
+export const spec = defineSpec({
+  layout:    variant(...),
+  hero:      variant(...),
+  financing: presence(...),
+  urgency:   intensity(...),
+  panels:    rank(...),
+})
+
+export type Spec = typeof spec</code></pre>
+<p>Keys are slot names and are the ids you use in <code>&lt;Slot name="hero" /&gt;</code>, in impressions, and in your analytics. Renaming one is a breaking change to your historical data, so name them for what they are rather than what they currently contain.</p>
+<p><code>defineSpec</code> returns a frozen object carrying a <code>specVersion</code>: a stable hash of every question and criterion. Change a criterion and the hash changes, which is what lets you segment measurements by spec revision instead of silently pooling results from two different questions.</p>
+
+<h2 id="variant">variant(Component, options)</h2>
+<p>Chooses one of several versions of a component.</p>
+<pre><code>hero: variant(Hero, {
+  question: "Which opening treatment fits this shopper?",
+  default: "bigImage",
+  options: {
+    bigImage:   "Judges by look and brand feel, reads little detail",
+    specTable:  "Opens with numbers and compares models on specifications",
+    videoFirst: "Unfamiliar with the product and needs to see it in use",
+  },
+})</code></pre>
+<table>
+  <tr><th>Field</th><th>Type</th><th></th></tr>
+  <tr><td><code>question</code></td><td><code>string</code></td><td>required. Carries the full meaning; slot ids are never sent to the model.</td></tr>
+  <tr><td><code>options</code></td><td><code>Record&lt;V, string&gt;</code></td><td>required. <code>V</code> is inferred from the component's own variant union, so a typo is a compile error.</td></tr>
+  <tr><td><code>default</code></td><td><code>V</code></td><td>required. Used whenever the gate fires or no answer arrives.</td></tr>
+  <tr><td><code>floor</code></td><td><code>number</code></td><td>optional per-slot confidence floor, overriding the global one.</td></tr>
+</table>
+<p>A <code>variant()</code> slot does not have to render a component. If the value is consumed as a class name or a data attribute, you get whole-page layout switching for free, which is how the prototype produces four visibly different pages from one component tree.</p>
+<pre><code>// layout as a variant whose value becomes an attribute
+&lt;article data-layout={useDecision("layout")}&gt;</code></pre>
+
+<h2 id="presence">presence(options)</h2>
+<p>Decides whether a block appears at all.</p>
+<pre><code>financing: presence({
+  question: "Should a monthly instalment option be offered to this shopper?",
+  default: false,
+  when: {
+    true:  "Budget constrained, and the item is a large one-off cost",
+    false: "Buys outright, or the item is cheap enough that instalments are noise",
+  },
+})</code></pre>
+<p><code>when</code> is optional but recommended: describing both sides sharpens the judgment considerably. The returned probability is compared against a threshold that defaults to 0.5.</p>
+<p>Remember that the answer is a probability, not a boolean. A value near 0.5 means the model genuinely cannot tell, which is different from a confident no.</p>
+
+<h2 id="rank">rank(items, options)</h2>
+<p>Orders a set of blocks by how important each is to this person.</p>
+<pre><code>panels: rank(["price", "proof", "specs", "shipping", "related"], {
+  question: "How central is each of these to this shopper's decision?",
+  levels: ["irrelevant", "minor", "useful", "important", "decisive"],
+  defaults: { related: "minor" },      // per-item, falls back to the middle level
+  max: 5,                              // structural cap
+})</code></pre>
+<p>Each item becomes its own comparable Score question, and code sorts the results descending. Ties break by declaration order, so the ordering is total and stable: the same answers always produce the same page, and an item with no answer sits exactly where its declared default puts it rather than at the bottom.</p>
+<div class="note"><b>Levels describe situations, not degrees.</b> &ldquo;Will not buy without reading what other owners said&rdquo; discriminates. &ldquo;Quite important&rdquo; does not. Up to ten levels; use as many as you can describe distinctly and no more.</div>
+
+<h2 id="intensity">intensity(options)</h2>
+<p>Places one thing on a scale you describe.</p>
+<pre><code>urgency: intensity({
+  question: "How strongly should limited availability be signalled?",
+  levels: ["none", "soft", "urgent"],
+  default: "none",
+})</code></pre>
+<p>The model returns a float, the probability-weighted mean of the level indices. The assembler bands it to the nearest level, rounding half up and clamping to the range. You can read the raw float instead if you want something continuous, such as an opacity or a delay.</p>
+
+<h2 id="policy">Overriding the assembler</h2>
+<p>The default policy is exported and composable, so overriding one rule does not mean rewriting the rest.</p>
+<pre><code>import { defaultPolicy, defineSpec } from "@decided-ui/core"
+
+export const spec = defineSpec({ /* slots */ }, {
+  policy: {
+    ...defaultPolicy,
+    confidenceFloor: 0.62,
+    onGated: (slot, reason) =&gt; metrics.increment("ui.gated", { slot, reason }),
+  },
+})</code></pre>
+<table>
+  <tr><th>Option</th><th>Default</th><th></th></tr>
+  <tr><td><code>confidenceFloor</code></td><td><code>0.55</code></td><td>tune against your own data. It is a starting point, not a constant of nature.</td></tr>
+  <tr><td><code>presenceThreshold</code></td><td><code>0.5</code></td><td>above this, the block renders.</td></tr>
+  <tr><td><code>onGated</code></td><td>none</td><td>called whenever a default is used instead of the model's answer.</td></tr>
+  <tr><td><code>timeoutMs</code></td><td><code>5000</code></td><td>on timeout every slot falls back to its default.</td></tr>
+</table>
+
+<h2 id="rendering">Rendering</h2>
+<pre><code>import { Provider, Slot, useDecision, track } from "@decided-ui/react"
+
+&lt;Provider decision={decision}&gt;
+  &lt;Slot name="hero" /&gt;              {/* renders the chosen Hero variant */}
+  &lt;Slot name="financing" /&gt;         {/* renders nothing if presence said no */}
+  {useDecision("panels").map(p =&gt; &lt;Slot key={p} name={p} /&gt;)}
+&lt;/Provider&gt;</code></pre>
+<p><code>&lt;Slot&gt;</code> fires exactly one impression when it mounts and never on re-render. <code>track("purchase", { value })</code> stamps the active decision id onto a conversion so it joins back to the variants that produced it. See <a href="measurement.html">measurement</a>.</p>
+</main></div>
+<footer><div class="inner">
+  <p>decided-ui &#183; <a href="https://github.com/pjdurden/decided-ui">github.com/pjdurden/decided-ui</a>
+     &#183; MIT</p>
+  <p>Design and prototype. The TypeScript packages described here are not built yet.
+     Decisions are made by <a href="https://typesafe.ai">Jev</a>, TypeSafe's System One model.</p>
+</div></footer>
+</body>
+</html>

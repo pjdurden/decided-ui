@@ -1,0 +1,40 @@
+<h1>How it compares</h1>
+<p class="lede">Where this sits relative to things you may already be using, and when each of them is the better answer.</p>
+
+<h2 id="matrix">At a glance</h2>
+<table>
+  <tr><th></th><th>Decides per person</th><th>Bounded output</th><th>Measurable</th><th>Cost per view</th></tr>
+  <tr><td><b>decided-ui</b></td><td>yes</td><td>yes</td><td>yes</td><td>one sub-second call, cacheable</td></tr>
+  <tr><td>Generative UI</td><td>yes</td><td>no</td><td>no</td><td>seconds of generation</td></tr>
+  <tr><td>A/B testing</td><td>no, random</td><td>yes</td><td>yes</td><td>free</td></tr>
+  <tr><td>Feature flags</td><td>by rule you wrote</td><td>yes</td><td>partly</td><td>free</td></tr>
+  <tr><td>Personalisation engines</td><td>yes, learned</td><td>yes</td><td>yes</td><td>free after training</td></tr>
+</table>
+
+<h2 id="generative">Versus generative UI</h2>
+<p>Generative UI is the more ambitious idea and, for a genuinely open-ended surface, the right one. If a user can ask for anything and the interface must be shaped to the request, no fixed set of variants will do.</p>
+<p>For a product page, a dashboard, an onboarding flow or a pricing page, the set of good interfaces is small, known, and was designed by someone. Generating one per request pays seconds of latency and gives up validation, visual regression testing and measurement, to arrive somewhere a designer has already been.</p>
+<blockquote>The honest summary: generative UI trades latency and measurability for expressiveness. Decided UI takes that trade in the other direction, and most production surfaces want it in the other direction.</blockquote>
+
+<h2 id="abtest">Versus A/B testing</h2>
+<p>An A/B test assigns randomly and measures. decided-ui assigns by judgment and measures. They answer different questions: a test asks &ldquo;which variant is better on average&rdquo;, this asks &ldquo;which variant is better for this person&rdquo;.</p>
+<p>They compose well. Run a test to learn that the spec table hero wins overall, then encode when it does not in a criterion, then use the impression data to check the model actually finds those cases. If your variants do not differ by segment, you do not need this; you need to ship the winner and delete the loser.</p>
+
+<h2 id="flags">Versus feature flags and rules engines</h2>
+<p>A rule is better than a model whenever you can write the rule. <code>if (user.plan === "enterprise")</code> is faster, free, deterministic and never wrong.</p>
+<p>The case for a model is the long tail: the conditions you cannot enumerate, and free text you cannot pattern match. &ldquo;Buying a leaving gift for a colleague and needs it before Friday&rdquo; is not a flag you were going to write, and it is a real shopper with a real preference about what your page should emphasise.</p>
+<div class="note"><b>Use both.</b> Nothing stops you gating a slot behind a flag and letting the model choose within it. Rules for what you know, judgment for what you do not.</div>
+
+<h2 id="personalisation">Versus a personalisation or recommendation engine</h2>
+<p>A learned personalisation system is better than this once you have the traffic and the labels to train it. It optimises directly against outcomes rather than against a sentence someone wrote.</p>
+<p>Three situations favour a decided interface. You are starting cold and have no interaction history to learn from. You need the decision to be inspectable, because someone will ask why this user saw this page. Or the signal you are deciding on is language, which a collaborative filter cannot read at all.</p>
+<p>These also compose: the impression and conversion stream this produces is exactly the labelled training data a learned model would need later. Scoring judgments once and letting code combine them is a reasonable on-ramp to classical ML, not a competitor to it.</p>
+
+<h2 id="dont">When not to use this</h2>
+<ul>
+  <li><b>You have one good interface.</b> Ship it. Do not manufacture variants so a model has something to choose between.</li>
+  <li><b>The right answer is knowable from data you hold.</b> Write the rule.</li>
+  <li><b>The surface is genuinely open-ended.</b> Generate it.</li>
+  <li><b>You cannot describe the situations your variants are for.</b> If you cannot write the criterion, the model cannot apply it, and you will get an expensive coin flip with a confidence score attached.</li>
+  <li><b>You will not look at the numbers.</b> Without the measurement stage this is decoration with a bill.</li>
+</ul>

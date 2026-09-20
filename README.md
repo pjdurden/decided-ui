@@ -13,6 +13,19 @@ prototype and the measurements on the site are real. **The TypeScript framework
 described here is not built yet.** Nothing is installable today. See
 [ROADMAP.md](ROADMAP.md).
 
+## Documentation
+
+| Page | |
+| --- | --- |
+| [Overview](https://pjdurden.github.io/decided-ui/) | the idea, the loop, the prototype |
+| [Concepts](https://pjdurden.github.io/decided-ui/concepts.html) | slots, primitives, criteria, decisions, gating |
+| [Spec API](https://pjdurden.github.io/decided-ui/spec.html) | `defineSpec`, `variant`, `presence`, `rank`, `intensity` |
+| [Architecture](https://pjdurden.github.io/decided-ui/architecture.html) | packages, request lifecycle, caching, failure behaviour |
+| [Jev](https://pjdurden.github.io/decided-ui/jev.html) | the decision engine, and why not an LLM |
+| [Measurement](https://pjdurden.github.io/decided-ui/measurement.html) | the `Tracker` contract and closing the loop |
+| [Comparison](https://pjdurden.github.io/decided-ui/comparison.html) | against generative UI, A/B tests, flags, personalisation |
+| [Roadmap](https://pjdurden.github.io/decided-ui/roadmap.html) | phases, and what done means for each |
+
 ## The idea in one comparison
 
 Generative UI has the model write the interface. That costs seconds, has to be
@@ -41,6 +54,10 @@ knows how to count.
 5. **Read the results.** Impressions and conversions land in your analytics tool
    joined by a decision id.
 
+Decisions are made by [Jev](https://typesafe.ai), TypeSafe's System One model, which
+returns typed answers with calibrated probabilities rather than text. One call answers
+every question about a visitor in parallel.
+
 ## Four primitives
 
 | Primitive | The question it asks |
@@ -60,6 +77,14 @@ and reporting to the tool you already pay for. Not a component library: you
 write the components. Not a way to avoid design work: someone still has to build
 every variant, and writing criteria that genuinely discriminate is the real
 labour.
+
+## Building the docs
+
+The site is generated from fragments so the nav and sidebar cannot drift:
+
+    python3 docs/_build.py
+
+Edit `docs/_content/<page>.html`, rebuild, and commit both.
 
 ## Licence
 

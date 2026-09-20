@@ -1,0 +1,101 @@
+:root{--ink:#14161a;--mut:#5b6472;--line:#e3e7ec;--bg:#fff;--soft:#f7f9fb;--accent:#2563eb;
+      --warn:#92400e;--warnbg:#fffbeb;--warnline:#fde68a;--code:#0f1115}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);
+     font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
+     -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:2px}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.88em;
+     background:var(--soft);border:1px solid var(--line);border-radius:5px;padding:1px 5px}
+pre{background:var(--code);color:#e6e6e6;border-radius:12px;padding:18px 20px;overflow:auto;
+    font:13.5px/1.62 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+pre code{background:none;border:none;padding:0;color:inherit;font-size:inherit}
+h1,h2,h3,h4{letter-spacing:-.021em;line-height:1.25}
+h1{font-size:38px;margin:0 0 16px;font-weight:660}
+h2{font-size:25px;margin:54px 0 14px;font-weight:660;scroll-margin-top:80px}
+h3{font-size:18px;margin:32px 0 8px;font-weight:640}
+h4{font-size:15.5px;margin:24px 0 6px;font-weight:640}
+p{margin:0 0 16px}
+ul,ol{margin:0 0 16px;padding-left:22px}
+li{margin:0 0 7px}
+table{width:100%;border-collapse:collapse;margin:18px 0;font-size:14.5px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);font-weight:640}
+figure{margin:28px 0}
+figure img{width:100%;height:auto;display:block;border:1px solid var(--line);border-radius:12px;background:#fff}
+figcaption{color:var(--mut);font-size:13.5px;margin-top:9px}
+blockquote{margin:20px 0;padding:2px 0 2px 18px;border-left:3px solid var(--line);color:var(--mut)}
+.note{background:var(--soft);border:1px solid var(--line);border-radius:10px;padding:14px 17px;margin:20px 0;font-size:15px}
+.note b{font-weight:660}
+.warn{background:var(--warnbg);border:1px solid var(--warnline);color:var(--warn);
+      border-radius:10px;padding:13px 16px;font-size:14.5px;margin:20px 0}
+.warn b{font-weight:680}
+
+/* top bar */
+.top{border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(255,255,255,.92);
+     backdrop-filter:blur(8px);z-index:20}
+.top .inner{max-width:1180px;margin:0 auto;padding:13px 24px;display:flex;align-items:center;gap:20px}
+.brand{font-weight:700;letter-spacing:-.01em;color:var(--ink);text-decoration:none;font-size:16px}
+.brand span{color:var(--accent)}
+.top nav{margin-left:auto;display:flex;gap:18px;flex-wrap:wrap;font-size:14.5px}
+.top nav a{color:var(--mut);text-decoration:none}
+.top nav a:hover,.top nav a.on{color:var(--ink)}
+
+/* docs shell */
+.shell{max-width:1180px;margin:0 auto;padding:0 24px;display:grid;
+       grid-template-columns:216px minmax(0,1fr);gap:48px}
+.side{padding:34px 0 60px;position:sticky;top:53px;align-self:start;max-height:calc(100vh - 53px);overflow:auto}
+.side h5{margin:22px 0 8px;font-size:11.5px;text-transform:uppercase;letter-spacing:.08em;
+         color:var(--mut);font-weight:700}
+.side h5:first-child{margin-top:0}
+.side a{display:block;padding:5px 0;font-size:14.5px;color:var(--mut);text-decoration:none}
+.side a:hover{color:var(--ink)}
+.side a.on{color:var(--accent);font-weight:620}
+.doc{padding:34px 0 90px;max-width:740px}
+.lede{font-size:19px;color:var(--mut);margin:0 0 6px}
+
+/* landing */
+.wrap{max-width:860px;margin:0 auto;padding:0 24px}
+.hero{padding:76px 0 4px}
+.eyebrow{color:var(--accent);font-weight:700;font-size:13px;letter-spacing:.12em;
+         text-transform:uppercase;margin-bottom:16px}
+.hero h1{font-size:50px;margin:0 0 18px}
+.hero .lede{font-size:21px;max-width:42ch;margin-bottom:28px}
+.cta{display:flex;gap:12px;flex-wrap:wrap;margin:26px 0 0}
+.cta a{display:inline-block;padding:11px 20px;border-radius:9px;text-decoration:none;font-weight:600;font-size:15px}
+.cta .go{background:var(--ink);color:#fff}
+.cta .ghost{border:1px solid var(--line);color:var(--ink)}
+.contrast{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:26px 0 8px}
+.card{border:1px solid var(--line);border-radius:14px;padding:20px 22px}
+.card.on{border-color:#c7d7ff;background:#f6f9ff}
+.card h3{margin:0 0 6px;font-size:16px}
+.card p{margin:0;font-size:15px;color:var(--mut)}
+.card .tag{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+           color:var(--mut);display:block;margin-bottom:10px}
+.card.on .tag{color:var(--accent)}
+.shots{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.shots figure{margin:0}
+.shots img{max-height:400px;object-fit:cover;object-position:top}
+.steps{counter-reset:s;padding:0;list-style:none;margin:22px 0}
+.steps li{counter-increment:s;position:relative;padding:0 0 18px 46px}
+.steps li::before{content:counter(s);position:absolute;left:0;top:1px;width:28px;height:28px;
+  border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;
+  font-size:13.5px;font-weight:700}
+.steps b{font-weight:640}.steps span{color:var(--mut)}
+.phase{border-left:3px solid var(--line);padding:2px 0 2px 18px;margin:0 0 22px}
+.phase.now{border-color:var(--accent)}
+.phase h3{margin:0 0 4px}
+.phase p{margin:0;color:var(--mut);font-size:15px}
+.pill{display:inline-block;font-size:11.5px;font-weight:700;letter-spacing:.07em;
+      text-transform:uppercase;border-radius:999px;padding:3px 9px;margin-left:9px;vertical-align:2px}
+.pill.todo{background:var(--soft);color:var(--mut);border:1px solid var(--line)}
+.pill.done{background:#ecfdf5;color:#047857;border:1px solid #a7f3d0}
+footer{border-top:1px solid var(--line);margin-top:10px}
+footer .inner{max-width:1180px;margin:0 auto;padding:26px 24px 64px;color:var(--mut);font-size:14px}
+@media (max-width:900px){
+  .shell{grid-template-columns:1fr;gap:0}
+  .side{position:static;max-height:none;padding:22px 0 0;border-bottom:1px solid var(--line)}
+  .hero h1{font-size:34px}.hero .lede{font-size:18px}
+  .contrast,.shots{grid-template-columns:1fr}
+}

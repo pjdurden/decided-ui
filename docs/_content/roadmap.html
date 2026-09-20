@@ -1,0 +1,51 @@
+<h1>Roadmap</h1>
+<p class="lede">What exists, what is next, and what done means for each phase.</p>
+<div class="warn"><b>Nothing is installable today.</b> P0 is a Python prototype that proved the loop and produced the numbers quoted across this site. The TypeScript packages are designed but unbuilt.</div>
+
+<div class="phase done">
+  <h3>P0 &nbsp;Prototype<span class="pill done">done</span></h3>
+  <p>Python, server rendered. Four page layouts, twelve questions in one batched call to Jev, deterministic assembly, a confidence gate, and an explanation panel showing every question and its distribution.</p>
+  <p><b>Done means:</b> a free-text shopper description typed on the spot produces a page no preset produces; the assembler's policy is unit tested with no network; and the latency figures are measured rather than estimated. All three hold.</p>
+</div>
+
+<div class="phase now">
+  <h3>P1 &nbsp;core and react<span class="pill todo">next</span></h3>
+  <p><code>@decided-ui/core</code>: the four primitives, the question compiler, typed answers, and the default assembler policy. <code>@decided-ui/react</code>: provider, <code>&lt;Slot&gt;</code>, <code>useDecision()</code>, impression-on-mount.</p>
+  <p>Driven by a mock decider, so the entire phase runs with no API key, no network and no cost, and is fully unit testable.</p>
+  <p><b>Done means:</b> npm install, define a spec, render a page whose variants change when the mock decider is handed different answers, and renaming a variant in a component breaks the build.</p>
+</div>
+
+<div class="phase">
+  <h3>P2 &nbsp;the server adapter<span class="pill todo">planned</span></h3>
+  <p><code>@decided-ui/next</code>: route handler, App Router server action, key handling, and the answer cache keyed on the state fields the spec actually reads.</p>
+  <p><b>Done means:</b> a Next.js app makes one real call per uncached visitor, the key never reaches the browser, and every failure mode named in <a href="architecture.html#failure">architecture</a> renders the default page rather than an error.</p>
+</div>
+
+<div class="phase">
+  <h3>P3 &nbsp;measurement<span class="pill todo">planned</span></h3>
+  <p>The <code>Tracker</code> interface in core and <code>@decided-ui/amplitude</code>. One impression per slot per decision, conversions stamped with the active decision id.</p>
+  <p><b>Done means:</b> a funnel in Amplitude answers &ldquo;which variant of this slot converted better&rdquo; with no custom instrumentation, and a re-rendering component still reports exactly one impression.</p>
+</div>
+
+<div class="phase">
+  <h3>P4 &nbsp;the example and the docs<span class="pill todo">planned</span></h3>
+  <p>The storefront prototype ported to React as a real example app, and these pages become documentation for something that exists rather than a design.</p>
+  <p><b>Done means:</b> clone the example, add a key, and have a decided page running in under ten minutes.</p>
+</div>
+
+<h2 id="later">Deliberately not planned</h2>
+<ul>
+  <li><b>Assignment, storage and reporting.</b> That is an experimentation platform. Adapters, not a product.</li>
+  <li><b>A component library.</b> You write the components. That is the point.</li>
+  <li><b>Automatic criteria rewriting.</b> Tempting and wrong. A model proposing its own questions removes the one part a human should own.</li>
+  <li><b>Client-side deciding.</b> The key belongs on a server, and there is no version of this where shipping it to the browser is acceptable.</li>
+</ul>
+
+<h2 id="open">Open questions</h2>
+<p>Recorded honestly, because they are not resolved.</p>
+<ul>
+  <li><b>Streaming.</b> Half a second is fine for a server-rendered page and awkward for a client transition. Whether to render defaults immediately and swap on arrival, or block, is unresolved and probably belongs to the app rather than the framework.</li>
+  <li><b>Spec size.</b> Twelve questions is comfortable. Nobody has established where the useful ceiling is, or whether a large spec degrades individual answers.</li>
+  <li><b>Criteria authoring.</b> The real labour, and currently unsupported. A linter that flags criteria describing degrees rather than situations would help more than any runtime feature.</li>
+  <li><b>The 300 ms target.</b> Missed by 1.6x to 2.4x in the only measurements taken. Whether that is the network, the region, or the shape of a twelve-question request is not yet known.</li>
+</ul>
