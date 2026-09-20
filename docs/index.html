@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>decided-ui - the model chooses among interfaces you wrote</title>
+<meta name="description" content="Decided UI: instead of generating an interface, a small fast model chooses among variants you wrote, and you measure which one actually converted.">
+<meta property="og:title" content="decided-ui">
+<meta property="og:description" content="The model chooses among interfaces you wrote, and you measure which one won.">
+<style>
+  :root{--ink:#14161a;--mut:#5b6472;--line:#e3e7ec;--bg:#fff;--soft:#f7f9fb;--accent:#2563eb;--warn:#92400e;--warnbg:#fffbeb;--warnline:#fde68a}
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);
+       font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
+       -webkit-font-smoothing:antialiased}
+  .wrap{max-width:860px;margin:0 auto;padding:0 24px}
+  a{color:var(--accent)}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.9em;
+       background:var(--soft);border:1px solid var(--line);border-radius:5px;padding:1px 5px}
+  pre{background:#0f1115;color:#e6e6e6;border-radius:12px;padding:18px 20px;overflow:auto;
+      font:13.5px/1.6 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  pre code{background:none;border:none;padding:0;color:inherit;font-size:inherit}
+  h1,h2,h3{letter-spacing:-.021em;line-height:1.25}
+  h2{font-size:27px;margin:64px 0 14px;font-weight:660}
+  h3{font-size:18px;margin:34px 0 8px;font-weight:640}
+  p{margin:0 0 16px}
+  table{width:100%;border-collapse:collapse;margin:18px 0;font-size:15px}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-size:12.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);font-weight:640}
+
+  header{padding:82px 0 8px;border-bottom:1px solid var(--line)}
+  .eyebrow{color:var(--accent);font-weight:700;font-size:13px;letter-spacing:.12em;
+           text-transform:uppercase;margin-bottom:16px}
+  h1{font-size:50px;margin:0 0 18px;font-weight:660}
+  .lede{font-size:21px;color:var(--mut);margin:0 0 30px;max-width:40ch}
+  .status{background:var(--warnbg);border:1px solid var(--warnline);color:var(--warn);
+          border-radius:10px;padding:13px 16px;font-size:14.5px;margin:0 0 44px}
+  .status b{font-weight:680}
+
+  .contrast{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:26px 0 8px}
+  .card{border:1px solid var(--line);border-radius:14px;padding:20px 22px}
+  .card.on{border-color:#c7d7ff;background:#f6f9ff}
+  .card h3{margin:0 0 6px;font-size:16px}
+  .card p{margin:0;font-size:15px;color:var(--mut)}
+  .card .tag{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+             color:var(--mut);display:block;margin-bottom:10px}
+  .card.on .tag{color:var(--accent)}
+
+  figure{margin:30px 0}
+  figure img{width:100%;height:auto;display:block;border:1px solid var(--line);border-radius:12px}
+  figcaption{color:var(--mut);font-size:14px;margin-top:10px}
+  .shots{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .shots figure{margin:0}
+  .shots img{max-height:420px;object-fit:cover;object-position:top}
+
+  .steps{counter-reset:s;padding:0;list-style:none;margin:22px 0}
+  .steps li{counter-increment:s;position:relative;padding:0 0 18px 46px;font-size:16px}
+  .steps li::before{content:counter(s);position:absolute;left:0;top:1px;width:28px;height:28px;
+    border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;
+    font-size:13.5px;font-weight:700}
+  .steps b{font-weight:640}
+  .steps span{color:var(--mut)}
+
+  .phase{border-left:3px solid var(--line);padding:2px 0 2px 18px;margin:0 0 22px}
+  .phase.now{border-color:var(--accent)}
+  .phase h3{margin:0 0 4px}
+  .phase p{margin:0;color:var(--mut);font-size:15px}
+  .pill{display:inline-block;font-size:11.5px;font-weight:700;letter-spacing:.07em;
+        text-transform:uppercase;border-radius:999px;padding:3px 9px;margin-left:9px;vertical-align:2px}
+  .pill.todo{background:var(--soft);color:var(--mut);border:1px solid var(--line)}
+  .pill.done{background:#ecfdf5;color:#047857;border:1px solid #a7f3d0}
+
+  footer{margin-top:80px;border-top:1px solid var(--line);padding:26px 0 70px;
+         color:var(--mut);font-size:14px}
+  @media (max-width:720px){
+    h1{font-size:36px}.lede{font-size:18px}
+    .contrast,.shots{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+<header class="wrap">
+  <div class="eyebrow">decided-ui</div>
+  <h1>The model chooses among interfaces you wrote.</h1>
+  <p class="lede">Not generated markup. Named variants, type-checked against your components, and measured so you learn which one actually won.</p>
+  <div class="status">
+    <b>Status: design and working prototype.</b> The loop below is proven end to end in a Python prototype,
+    with real measurements on this page. The TypeScript framework described here is <b>not built yet</b>.
+    Phases are at the bottom. Nothing here is installable today.
+  </div>
+</header>
+
+<main class="wrap">
+
+<h2>The idea</h2>
+<div class="contrast">
+  <div class="card">
+    <span class="tag">Generative UI</span>
+    <h3>The model writes the interface</h3>
+    <p>Seconds per page. Output has to be validated before it can be rendered. Every response is different, so there is nothing to compare and nothing to learn from.</p>
+  </div>
+  <div class="card on">
+    <span class="tag">Decided UI</span>
+    <h3>The model picks from what you built</h3>
+    <p>One round trip. Cannot produce an interface that does not exist. Every choice has a name, so you can ask which name converted better.</p>
+  </div>
+</div>
+<p>That last sentence is the whole argument. A generative interface cannot be A/B tested even in principle, because the thing it produced will never be produced again. A decided interface is just a variant with an id, which every analytics tool you already use knows how to count.</p>
+
+<h2>The loop</h2>
+<figure>
+  <img src="loop.svg" alt="A four stage cycle: spec, decide, render, measure, and back to spec.">
+  <figcaption>The measurement stage is what makes this a paradigm rather than a trick. Without it, &ldquo;AI chose your layout&rdquo; is an unfalsifiable claim.</figcaption>
+</figure>
+
+<h2>What you write</h2>
+<ol class="steps">
+  <li><b>Define the spec.</b> <span>Slots, their variants, and a plain-English criterion for each variant. The criterion is both the documentation and the question the model is asked.</span></li>
+  <li><b>Write the components.</b> <span>Ordinary React. One per variant. Nothing in them knows a model exists.</span></li>
+  <li><b>Write the assembler, or skip it.</b> <span>Policy: confidence floors, caps, ordering, fallbacks. A working default ships, so most people never write this.</span></li>
+  <li><b>Wire the decider.</b> <span>One line in a route handler. The key stays on the server.</span></li>
+  <li><b>Read the results.</b> <span>Impressions and conversions land in Amplitude joined by a decision id.</span></li>
+</ol>
+
+<h3>The spec is TypeScript, and that is the point</h3>
+<pre><code>export const spec = defineSpec({
+  hero: variant(Hero, {
+    question: "Which opening treatment fits this shopper?",
+    default: "bigImage",
+    options: {
+      bigImage:  "Judges by look and brand feel, reads little detail",
+      specTable: "Opens with numbers and compares models on specifications",
+    },
+  }),
+
+  financing: presence({
+    question: "Should a monthly instalment option be offered?",
+    default: false,
+  }),
+
+  panels: rank(["price", "proof", "specs", "shipping"], {
+    question: "How central is each of these to this shopper's decision?",
+  }),
+})</code></pre>
+<p>The keys of <code>options</code> are constrained to <code>Hero</code>&rsquo;s own variant union. Rename a variant and the spec stops compiling. Delete a component and you find out at build time, not when a user hits the page.</p>
+
+<h2>Four primitives, and that is the whole vocabulary</h2>
+<table>
+  <tr><th>Primitive</th><th>The question it asks</th><th>Returns</th></tr>
+  <tr><td><code>variant()</code></td><td>which version of this component</td><td>one option, with a distribution</td></tr>
+  <tr><td><code>presence()</code></td><td>should this appear at all</td><td>a probability</td></tr>
+  <tr><td><code>rank()</code></td><td>what order should these go in</td><td>a score per item</td></tr>
+  <tr><td><code>intensity()</code></td><td>how strongly, along a described scale</td><td>a position on the scale</td></tr>
+</table>
+<p>Page layout is not a fifth primitive. It is a <code>variant()</code> whose chosen value becomes a class name rather than a component, which is exactly how the four layouts below work.</p>
+
+<h2>The prototype, which exists</h2>
+<p>A working Python prototype assembles a product page from pre-built fragments. One batched call answers twelve questions about a shopper in parallel, then deterministic code picks the layout, the variants, what to hide, and what order to put things in. These four pages are the same product and the same components, decided differently. No branch was written for any of them.</p>
+
+<div class="shots">
+  <figure>
+    <img src="img/layout-media-left.png" alt="A product page with the photo on the left and details on the right.">
+    <figcaption><b>media_left</b>: &ldquo;browsing after work with no particular plan&rdquo;</figcaption>
+  </figure>
+  <figure>
+    <img src="img/layout-dense-compare.png" alt="A dense two column comparison layout with a small photo.">
+    <figcaption><b>dense_compare</b>: &ldquo;comparing four models on a spreadsheet right now&rdquo;</figcaption>
+  </figure>
+  <figure>
+    <img src="img/layout-editorial.png" alt="An editorial layout with a centred title and a full width photo.">
+    <figcaption><b>editorial</b>: &ldquo;not sure they need one, would like to be shown what it is like to live with&rdquo;</figcaption>
+  </figure>
+  <figure>
+    <img src="img/layout-fast-checkout.png" alt="A compact layout with a buy button pinned above everything.">
+    <figcaption><b>fast_checkout</b>: &ldquo;it died yesterday, needs a replacement today, card saved&rdquo;</figcaption>
+  </figure>
+</div>
+
+<h3>Measured, not claimed</h3>
+<p>Two live calls came back at <b>724 ms</b> and <b>468 ms</b> for an uncached shopper. The prototype&rsquo;s own target was under 300 ms and it misses that, by 2.4x and 1.6x. Assembly and rendering are hundredths of a millisecond; effectively all of it is the network round trip. A cached shopper costs nothing.</p>
+<p>That is slower than hoped and still a different category from generating a component tree token by token, which costs seconds and yields nothing you can measure afterwards.</p>
+
+<h2>Measurement contract</h2>
+<p>Every decision carries a <code>decisionId</code> and a hash of the spec version. Each rendered variant fires exactly one impression, on mount, never on re-render. Conversions you report are stamped with the active decision id, so they join back to the variants that produced them.</p>
+<pre><code>interface Tracker {
+  impression(e: {
+    decisionId: string
+    specVersion: string
+    slot: string
+    variant: string
+    confidence: number
+    gated: boolean       // true when the model was not trusted
+  }): void
+
+  conversion(e: { decisionId: string; event: string; props?: object }): void
+}</code></pre>
+<p>An Amplitude adapter ships first. The interface is four lines, so PostHog, Mixpanel or an internal pipe are a short afternoon.</p>
+
+<h2>Packages</h2>
+<table>
+  <tr><th>Package</th><th>What it is</th></tr>
+  <tr><td><code>@decided-ui/core</code></td><td>primitives, question compiler, answer types, default assembler. Pure and isomorphic, no React, no server.</td></tr>
+  <tr><td><code>@decided-ui/react</code></td><td><code>&lt;Provider&gt;</code>, <code>&lt;Slot&gt;</code>, <code>useDecision()</code>, impression firing.</td></tr>
+  <tr><td><code>@decided-ui/next</code></td><td>route handler and server action for the App Router. Express and Remix follow.</td></tr>
+  <tr><td><code>@decided-ui/amplitude</code></td><td>adapter over the <code>Tracker</code> interface.</td></tr>
+</table>
+
+<h2>Phases</h2>
+<div class="phase done">
+  <h3>P0 &nbsp;Prototype<span class="pill done">done</span></h3>
+  <p>Python, server rendered. Four layouts, twelve questions, one call. Proved the loop above the measurement stage, and produced the numbers on this page.</p>
+</div>
+<div class="phase now">
+  <h3>P1 &nbsp;core and react<span class="pill todo">next</span></h3>
+  <p>The four primitives, the question compiler, the default assembler, and the React renderer. Driven by a mock decider, so it runs with no key and no network and is fully testable.</p>
+</div>
+<div class="phase">
+  <h3>P2 &nbsp;the server adapter<span class="pill todo">planned</span></h3>
+  <p>Next.js route handler, real decisions, key handling, caching.</p>
+</div>
+<div class="phase">
+  <h3>P3 &nbsp;measurement<span class="pill todo">planned</span></h3>
+  <p>The <code>Tracker</code> interface, the Amplitude adapter, and the impression-once discipline that makes the numbers trustworthy.</p>
+</div>
+<div class="phase">
+  <h3>P4 &nbsp;the example and the docs<span class="pill todo">planned</span></h3>
+  <p>The storefront above, ported to React as a real example. This page becomes the documentation.</p>
+</div>
+
+<h2>What this is not</h2>
+<p>It is not an experimentation platform. It emits events and leaves assignment, storage and reporting to the tool you already pay for. It is not a component library; you write the components. It is not a way to avoid design work; someone still has to build every variant, and writing criteria that genuinely discriminate is the real labour. In the prototype, two slots barely move because their criteria are too vague, which is exactly the failure mode to expect.</p>
+
+</main>
+
+<footer class="wrap">
+  <p>decided-ui &#183; <a href="https://github.com/pjdurden/decided-ui">github.com/pjdurden/decided-ui</a></p>
+  <p>Prototype screenshots are of a fictional product. Photograph from Unsplash under the Unsplash License.</p>
+</footer>
+</body>
+</html>
